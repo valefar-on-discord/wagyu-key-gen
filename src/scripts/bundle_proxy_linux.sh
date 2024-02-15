@@ -10,6 +10,7 @@ fi
 
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
+ETHDODIRNAME=ethdo-1.35.2
 EDCDIR=staking-deposit-cli-2.7.0
 
 TARGETPACKAGESPATH=$SCRIPTPATH/../../dist/packages
@@ -21,6 +22,8 @@ DISTBINPATH=$SCRIPTPATH/../../build/bin
 DISTWORDSPATH=$SCRIPTPATH/../../build/word_lists
 SRCWORDSPATH=$SCRIPTPATH/../vendors/$EDCDIR/staking_deposit/key_handling/key_derivation/word_lists
 SRCINTLPATH=$SCRIPTPATH/../vendors/$EDCDIR/staking_deposit/intl
+
+ETHDODIR=$SCRIPTPATH/../vendors/$ETHDODIRNAME
 
 mkdir -p $DISTBINPATH
 mkdir -p $DISTWORDSPATH
@@ -39,3 +42,6 @@ PYTHONPATH=$PYTHONPATH pyinstaller \
 
 # Adding word list
 cp $SRCWORDSPATH/* $DISTWORDSPATH
+
+# Install ethdo
+GOBIN=$DISTBINPATH go install -C $ETHDODIR
