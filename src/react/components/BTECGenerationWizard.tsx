@@ -29,7 +29,7 @@ type Props = {
 /**
  * This is the wizard the user will navigate to generate their BTEC.
  * It uses the notion of a 'step' to render specific pages within the flow.
- * 
+ *
  * @param props.onStepBack function to execute when stepping back
  * @param props.onStepForward function to execute when stepping forward
  * @param props.network network the app is running for
@@ -47,7 +47,7 @@ const BTECGenerationWizard: FC<Props> = (props): ReactElement => {
   const [folderError, setFolderError] = useState(false);
   const [folderErrorMsg, setFolderErrorMsg] = useState("");
   const [modalDisplay, setModalDisplay] = useState(false);
-  
+
   const prevLabel = () => {
     switch (step) {
       case 0:
@@ -162,7 +162,16 @@ const BTECGenerationWizard: FC<Props> = (props): ReactElement => {
   const content = () => {
     switch(step) {
       case 0: return (
-        <SelectFolder setFolderPath={props.setFolderPath} folderPath={props.folderPath} setFolderError={setFolderError} folderError={folderError} setFolderErrorMsg={setFolderErrorMsg} folderErrorMsg={folderErrorMsg} modalDisplay={modalDisplay} setModalDisplay={setModalDisplay} />
+        <SelectFolder
+          setFolderPath={props.setFolderPath}
+          folderPath={props.folderPath}
+          setFolderError={setFolderError}
+          folderError={folderError}
+          setFolderErrorMsg={setFolderErrorMsg}
+          folderErrorMsg={folderErrorMsg}
+          modalDisplay={modalDisplay}
+          setModalDisplay={setModalDisplay}
+        />
       );
       case 1: return (
         <CreatingBTECFile />

@@ -39,10 +39,17 @@ export interface IEth2DepositAPI {
   validateMnemonic: (mnemonic: string) => Promise<void>,
 }
 
+export interface IEthdoApi {
+  generateExitTransactions: (folder: string, chain: string, epoch: number, keystores: Keystore[]) => Promise<void>,
+  generateExitTransactionsMnemonic: (folder: string, chain: string, mnemonic: string, startIndex: number, epoch: number, validatorIndices: string) => Promise<void>
+}
+
 export interface IBashUtilsAPI {
   doesDirectoryExist: (directory: string) => Promise<boolean>,
-  findFirstFile: (directory: string, startsWith: string) => Promise<string>
+  findAllFiles: (directory: string, startsWith: string) => Promise<string[]>,
+  findFirstFile: (directory: string, startsWith: string) => Promise<string>,
   isDirectoryWritable: (directory: string) => Promise<boolean>,
+  readKeystoreInformation: (filePaths: string[]) => Promise<Keystore[]>,
 }
 
 export interface IWeb3UtilsAPI {
@@ -53,6 +60,7 @@ declare global {
   interface Window {
     electronAPI: IElectronAPI,
     eth2Deposit: IEth2DepositAPI,
+    ethdoApi: IEthdoApi,
     bashUtils: IBashUtilsAPI,
     web3Utils: IWeb3UtilsAPI
   }

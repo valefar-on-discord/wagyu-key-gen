@@ -26,7 +26,7 @@ const NetworkDiv = styled.div`
 
 const LandingHeader = styled(Typography)`
   font-size: 36px;
-  margin-top: 15px;
+  margin-top: 0px;
   margin-bottom: 20px;
 `;
 
@@ -59,9 +59,9 @@ type HomeProps = {
 
 /**
  * Home page and entry point of the app.  This page displays general information
- * and options for a user to create a new secret recovery phrase or use an 
+ * and options for a user to create a new secret recovery phrase or use an
  * existing one.
- * 
+ *
  * @param props passed in data for the component to use
  * @returns the react element to render
  */
@@ -96,24 +96,27 @@ const Home: FC<HomeProps> = (props): ReactElement => {
   }
 
   const handleReuseMnemonicModalSubmitClick = (action: ReuseMnemonicAction) => {
+    let pathname = '';
 
-    if (action == ReuseMnemonicAction.RegenerateKeys) {
+    switch (action) {
+      case ReuseMnemonicAction.RegenerateKeys:
 
-      const location = {
-        pathname: `/wizard/${StepSequenceKey.MnemonicImport}`
-      }
+        pathname = `/wizard/${StepSequenceKey.MnemonicImport}`;
 
-      history.push(location);
+        break;
+      case ReuseMnemonicAction.GenerateBLSToExecutionChange:
 
-    } else if (action == ReuseMnemonicAction.GenerateBLSToExecutionChange) {
+        pathname = `/wizard/${StepSequenceKey.BLSToExecutionChangeGeneration}`;
 
-      const location = {
-        pathname: `/wizard/${StepSequenceKey.BLSToExecutionChangeGeneration}`
-      }
+        break;
+      case ReuseMnemonicAction.GenerateExitTransaction:
 
-      history.push(location);
+        pathname = `/wizard/${StepSequenceKey.PreSignExitTransactionGenerationMnemonic}`;
 
+        break;
     }
+
+    history.push({ pathname });
 
   }
 
@@ -145,6 +148,13 @@ const Home: FC<HomeProps> = (props): ReactElement => {
       handleOpenReuseMnemonicModal();
 
     }
+  }
+
+  const handleGenerateExitTransactions = () => {
+
+    const pathname = `/wizard/${StepSequenceKey.PreSignExitTransactionGeneration}`;
+    history.push({ pathname });
+
   }
 
   const tabIndex = (priority: number) => showNetworkModal ? -1 : priority;
@@ -195,6 +205,13 @@ const Home: FC<HomeProps> = (props): ReactElement => {
           <Tooltip title={tooltips.IMPORT_MNEMONIC}>
             <Button style={{color: "gray"}} size="small" onClick={handleUseExistingMnemonic} tabIndex={tabIndex(1)}>
               Use Existing Secret Recovery Phrase
+            </Button>
+          </Tooltip>
+        </Grid>
+        <Grid item>
+          <Tooltip title={tooltips.GENERATE_EXIT_TRANSACTION}>
+            <Button style={{color: "gray"}} size="small" onClick={handleGenerateExitTransactions} tabIndex={tabIndex(1)}>
+              Generate Exit Transactions
             </Button>
           </Tooltip>
         </Grid>

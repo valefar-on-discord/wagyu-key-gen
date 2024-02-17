@@ -18,8 +18,10 @@ import { isAddress } from 'web3-utils';
 
 import {
   doesDirectoryExist,
+  findAllFiles,
   findFirstFile,
   isDirectoryWritable,
+  readKeystoreInformation,
 } from './BashUtils';
 import {
   createMnemonic,
@@ -28,6 +30,7 @@ import {
   validateBLSCredentials,
   validateMnemonic,
 } from './Eth2Deposit';
+import { generateExitTransactions, generateExitTransactionsMnemonic } from "./EthdoApi";
 
 /**
  * VERSION and COMMITHASH are set by the git-revision-webpack-plugin module.
@@ -135,8 +138,20 @@ app.on("ready", () => {
   ipcMain.handle('isDirectoryWritable', async (event, ...args: Parameters<typeof isDirectoryWritable>) => {
     return await isDirectoryWritable(...args);
   });
+  ipcMain.handle('findAllFiles', async (event, ...args: Parameters<typeof findAllFiles>) => {
+    return await findAllFiles(...args);
+  });
   ipcMain.handle('findFirstFile', async (event, ...args: Parameters<typeof findFirstFile>) => {
     return await findFirstFile(...args);
+  });
+  ipcMain.handle('readKeystoreInformation', async (event, ...args: Parameters<typeof readKeystoreInformation>) => {
+    return await readKeystoreInformation(...args);
+  });
+  ipcMain.handle('generateExitTransactions', async (event, ...args: Parameters<typeof generateExitTransactions>) => {
+    return await generateExitTransactions(...args);
+  });
+  ipcMain.handle('generateExitTransactionsMnemonic', async (event, ...args: Parameters<typeof generateExitTransactionsMnemonic>) => {
+    return await generateExitTransactionsMnemonic(...args);
   });
   ipcMain.handle('isAddress', async (event, ...args: Parameters<typeof isAddress>) => {
     return await isAddress(...args);

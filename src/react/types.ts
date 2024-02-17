@@ -6,22 +6,41 @@ export enum StepKey {
   Finish,
   BTECConfiguration,
   BTECGeneration,
-  FinishBTEC
+  FinishBTEC,
+  ExitTransactionConfiguration,
+  ExitTransactionGeneration,
+  ExitTransactionMnemonicConfiguration,
+  ExitTransactionMnemonicGeneration,
+  FinishExitTransaction
 }
 
 export enum StepSequenceKey {
   MnemonicGeneration = "mnemonicgeneration",
   MnemonicImport = "mnemonicimport",
   BLSToExecutionChangeGeneration = "blstoexecutionchangegeneration",
+  PreSignExitTransactionGeneration = "presignexittransactiongeneration",
+  PreSignExitTransactionGenerationMnemonic = "presignexittransactiongenerationmnemonic",
 }
 
 export enum ReuseMnemonicAction {
   RegenerateKeys,
-  GenerateBLSToExecutionChange
+  GenerateBLSToExecutionChange,
+  GenerateExitTransaction,
 }
 
 export enum Network {
   MAINNET = "Mainnet",
   GOERLI = "Goerli",
   HOLESKY = "Holesky"
+}
+
+export interface Keystore {
+  publicKey: string;
+  shortenedPub: string;
+  index: string;
+  validatorIndex: string;
+  fileName: string;
+  fullPath: string;
+  password: string;
+  validPassword: boolean;
 }

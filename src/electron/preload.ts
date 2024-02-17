@@ -12,6 +12,7 @@ import {
   IBashUtilsAPI,
   IElectronAPI,
   IEth2DepositAPI,
+  IEthdoApi,
   IWeb3UtilsAPI,
 } from "./renderer";
 
@@ -30,10 +31,17 @@ contextBridge.exposeInMainWorld('eth2Deposit', {
   'validateMnemonic': (...args: Parameters<IEth2DepositAPI['validateMnemonic']>) => ipcRenderer.invoke('validateMnemonic', ...args),
 });
 
+contextBridge.exposeInMainWorld('ethdoApi', {
+  'generateExitTransaction': (...args: Parameters<IEthdoApi['generateExitTransactions']>) => ipcRenderer.invoke('generateExitTransaction', ...args),
+  'generateExitTransactionsMnemonic': (...args: Parameters<IEthdoApi['generateExitTransactionsMnemonic']>) => ipcRenderer.invoke('generateExitTransactionsMnemonic', ...args),
+});
+
 contextBridge.exposeInMainWorld('bashUtils', {
   'doesDirectoryExist': (...args: Parameters<IBashUtilsAPI['doesDirectoryExist']>) => ipcRenderer.invoke('doesDirectoryExist', ...args),
+  'findAllFiles': (...args: Parameters<IBashUtilsAPI['findAllFiles']>) => ipcRenderer.invoke('findAllFiles', ...args),
   'findFirstFile': (...args: Parameters<IBashUtilsAPI['findFirstFile']>) => ipcRenderer.invoke('findFirstFile', ...args),
   'isDirectoryWritable': (...args: Parameters<IBashUtilsAPI['isDirectoryWritable']>) => ipcRenderer.invoke('isDirectoryWritable', ...args),
+  'readKeystoreInformation': (...args: Parameters<IBashUtilsAPI['readKeystoreInformation']>) => ipcRenderer.invoke('readKeystoreInformation', ...args),
 });
 
 contextBridge.exposeInMainWorld('web3Utils', {

@@ -1,12 +1,11 @@
 import { Grid, Typography } from '@material-ui/core';
 import React, { FC, ReactElement, Dispatch, SetStateAction, useState } from 'react';
 import styled from 'styled-components';
-import SelectFolder from './KeyGeneratioinFlow/2-SelectFolder';
-import CreatingKeys from './KeyGeneratioinFlow/3-CreatingKeys';
-import KeysCreated from './KeyGeneratioinFlow/4-KeysCreated';
 import StepNavigation from './StepNavigation';
-import { Network } from '../types';
 import { errors } from '../constants';
+import SelectOutputFolder from './ExitTransactionGenerationFlow/2-SelectOutputFolder';
+import CreatingExitTransactions from './ExitTransactionGenerationFlow/3-CreatingExitTransactions';
+import { Network } from '../types';
 
 const ContentGrid = styled(Grid)`
   height: 320px;
@@ -16,33 +15,16 @@ const ContentGrid = styled(Grid)`
 type Props = {
   onStepBack: () => void,
   onStepForward: () => void,
-  network: Network,
   mnemonic: string,
-  keyGenerationStartIndex: number,
-  numberOfKeys: number,
-  withdrawalAddress: string,
-  password: string,
+  index: number,
+  epoch: number,
+  validatorIndices: string,
+  network: Network,
   folderPath: string,
   setFolderPath: Dispatch<SetStateAction<string>>,
 }
 
-/**
- * This is the wizard the user will navigate to generate their keys.
- * It uses the notion of a 'step' to render specific pages within the flow.
- *
- * @param props.onStepBack function to execute when stepping back
- * @param props.onStepForward function to execute when stepping forward
- * @param props.network network the app is running for
- * @param props.mnemonic the mnemonic
- * @param props.keyGenerationStartIndex the index at which to start generating keys for the user
- * @param props.numberOfKeys the total number of keys to generate for the user
- * @param props.withdrawalAddress the optional wallet address for the withdrawal credentials
- * @param props.password the password to use to protect the keys for the user
- * @param props.folderPath the path at which to store the keys
- * @param props.setFolderPath function to update the path
- * @returns the react element to render
- */
-const KeyGenerationWizard: FC<Props> = (props): ReactElement => {
+const ExitTransactionMnemonicGenerationWizard: FC<Props> = (props): ReactElement => {
   const [step, setStep] = useState(0);
   const [folderError, setFolderError] = useState(false);
   const [folderErrorMsg, setFolderErrorMsg] = useState("");
@@ -67,7 +49,6 @@ const KeyGenerationWizard: FC<Props> = (props): ReactElement => {
         break;
       }
       default: {
-        console.log("Key generation step is greater than 0 and prev was clicked. This should never happen.")
         break;
       }
     }
@@ -104,7 +85,7 @@ const KeyGenerationWizard: FC<Props> = (props): ReactElement => {
                       setFolderError(true);
                     } else {
                       setStep(step + 1);
-                      handleKeyGeneration();
+                      generateExitTransactions();
                     }
                   });
               }
@@ -118,37 +99,28 @@ const KeyGenerationWizard: FC<Props> = (props): ReactElement => {
         break;
       }
 
-      // Keys are being generated
       case 1: {
         // there is no next button here
-        // step is autoincremented once keys are created
+        // step is autoincremented once file is created
         break;
       }
 
       default: {
-        console.log("Key generation step is greater than 1 and next was clicked. This should never happen.")
         break;
       }
 
     }
   }
 
-  const handleKeyGeneration = () => {
-
-    let withdrawalAddress = props.withdrawalAddress;
-
-    if (withdrawalAddress != "" && !withdrawalAddress.toLowerCase().startsWith("0x")) {
-      withdrawalAddress = "0x" + withdrawalAddress;
-    }
-
-    window.eth2Deposit.generateKeys(
-      props.mnemonic,
-      props.keyGenerationStartIndex!,
-      props.numberOfKeys,
-      props.network,
-      props.password,
-      withdrawalAddress,
-      props.folderPath).then(() => {
+  const generateExitTransactions = () => {
+    window.ethdoApi.generateExitTransactionsMnemonic(
+        props.folderPath,
+        props.network,
+        props.mnemonic,
+        props.index,
+        props.epoch,
+        props.validatorIndices
+    ).then(() => {
       props.onStepForward();
     }).catch((error) => {
       setStep(0);
@@ -156,29 +128,27 @@ const KeyGenerationWizard: FC<Props> = (props): ReactElement => {
       const errorMsg = ('stderr' in error) ? error.stderr : error.message;
       setFolderErrorMsg(errorMsg);
     })
-
   }
 
   const content = () => {
     switch(step) {
-      case 0: return (
-        <SelectFolder
-          setFolderPath={props.setFolderPath}
-          folderPath={props.folderPath}
-          setFolderError={setFolderError}
-          folderError={folderError}
-          setFolderErrorMsg={setFolderErrorMsg}
-          folderErrorMsg={folderErrorMsg}
-          modalDisplay={modalDisplay}
-          setModalDisplay={setModalDisplay}
-        />
-      );
-      case 1: return (
-        <CreatingKeys />
-      );
-      case 2: return (
-        <KeysCreated folderPath={props.folderPath} network={props.network} />
-      );
+      case 0:
+        return (
+          <SelectOutputFolder
+            setFolderPath={props.setFolderPath}
+            folderPath={props.folderPath}
+            setFolderError={setFolderError}
+            folderError={folderError}
+            setFolderErrorMsg={setFolderErrorMsg}
+            folderErrorMsg={folderErrorMsg}
+            modalDisplay={modalDisplay}
+            setModalDisplay={setModalDisplay}
+          />
+        );
+      case 1:
+        return (
+          <CreatingExitTransactions />
+        );
       default:
         return null;
     }
@@ -188,7 +158,7 @@ const KeyGenerationWizard: FC<Props> = (props): ReactElement => {
     <Grid container direction="column" spacing={2}>
       <Grid item>
         <Typography variant="h1">
-          Create Keys
+          Generate signed exit transaction
         </Typography>
       </Grid>
       <ContentGrid item container>
@@ -211,4 +181,4 @@ const KeyGenerationWizard: FC<Props> = (props): ReactElement => {
   );
 }
 
-export default KeyGenerationWizard;
+export default ExitTransactionMnemonicGenerationWizard;

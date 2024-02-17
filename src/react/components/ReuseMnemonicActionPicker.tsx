@@ -8,7 +8,7 @@ import styled from 'styled-components';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 320px;
+  height: 380px;
   width: 560px;
   background: rgba(27, 38, 44, 0.95);
   border-radius: 20px;
@@ -47,17 +47,8 @@ type ReuseMnemonicActionPickerProps = {
  */
 export const ReuseMnemonicActionPicker = (props: ReuseMnemonicActionPickerProps) => {
 
-  const handleSelectRegenerateKeys = () => {
+  const handleSelectedAction = (action: ReuseMnemonicAction) => {
 
-    const action = ReuseMnemonicAction.RegenerateKeys;
-    props.handleReuseMnemonicModalSubmitClick(action);
-    props.handleCloseReuseMnemonicModal({}, 'submitClick');
-
-  }
-
-  const handleSelectGenerateBLSToExecutionChange = () => {
-
-    const action = ReuseMnemonicAction.GenerateBLSToExecutionChange;
     props.handleReuseMnemonicModalSubmitClick(action);
     props.handleCloseReuseMnemonicModal({}, 'submitClick');
 
@@ -69,14 +60,21 @@ export const ReuseMnemonicActionPicker = (props: ReuseMnemonicActionPickerProps)
       <div>
         <OptionsGrid container spacing={2} direction="column">
           <Grid item>
-            <Button variant="contained" color="primary" onClick={handleSelectRegenerateKeys}>
+            <Button variant="contained" color="primary" onClick={() => handleSelectedAction(ReuseMnemonicAction.RegenerateKeys)}>
               Generate existing or new validator keys
             </Button>
           </Grid>
           <Grid item>
             <Tooltip title="If you initially created your validator keys without adding a withdrawal address, you can generate this BLS to execution change to add one once.">
-              <Button variant="contained" color="primary" onClick={handleSelectGenerateBLSToExecutionChange}>
+              <Button variant="contained" color="primary" onClick={() => handleSelectedAction(ReuseMnemonicAction.GenerateBLSToExecutionChange)}>
                 Generate your BLS to execution change<br />(Add a withdrawal address)
+              </Button>
+            </Tooltip>
+          </Grid>
+          <Grid item>
+            <Tooltip title="Use your mnemonic and validator indices to generate your exit transaction. It is recommended to use your keystore files instead if available.">
+              <Button variant="contained" color="primary" onClick={() => handleSelectedAction(ReuseMnemonicAction.GenerateExitTransaction)}>
+                Generate your exit transaction
               </Button>
             </Tooltip>
           </Grid>
